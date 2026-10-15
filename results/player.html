@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dehazing Video Comparison Viewer</title>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --card-bg: #1a1d27;
+      --border: #2a2e3d;
+      --accent: #3b82f6;
+      --text: #e2e8f0;
+      --text-muted: #94a3b8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+    p.subtitle {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    .controls {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    button {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    button:hover { opacity: 0.9; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      gap: 20px;
+      width: 100%;
+      max-width: 1300px;
+    }
+    .video-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    }
+    .video-header {
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.03);
+      border-bottom: 1px solid var(--border);
+    }
+    .video-title {
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+    .badge {
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .badge-hazy { background: #64748b; color: #fff; }
+    .badge-smoothed { background: #10b981; color: #fff; }
+    .badge-nosmooth { background: #f59e0b; color: #fff; }
+    video {
+      width: 100%;
+      height: auto;
+      background: #000;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Video Dehazing Results (REVIDE Test - C005)</h1>
+    <p class="subtitle">Comparing Hazy Input, Dehazed with Temporal EMA, and Dehazed without Smoothing</p>
+  </header>
+
+  <div class="controls">
+    <button id="playBtn">Play All</button>
+    <button id="restartBtn">Restart All</button>
+  </div>
+
+  <div class="grid">
+    <!-- Hazy Input -->
+    <div class="video-card">
+      <div class="video-header">
+        <span class="video-title">Hazy Input Video</span>
+        <span class="badge badge-hazy">Input</span>
+      </div>
+      <video id="v1" controls loop playsinline>
+        <source src="hazy_input.mp4" type="video/mp4">
+      </video>
+    </div>
+
+    <!-- Dehazed Smoothed -->
+    <div class="video-card">
+      <div class="video-header">
+        <span class="video-title">Dehazed + Temporal EMA</span>
+        <span class="badge badge-smoothed">Smoothed (alpha=0.8)</span>
+      </div>
+      <video id="v2" controls loop playsinline>
+        <source src="dehazed_smoothed.mp4" type="video/mp4">
+      </video>
+    </div>
+
+    <!-- Dehazed No Smooth -->
+    <div class="video-card">
+      <div class="video-header">
+        <span class="video-title">Dehazed (No Smoothing)</span>
+        <span class="badge badge-nosmooth">Per-Frame Raw</span>
+      </div>
+      <video id="v3" controls loop playsinline>
+        <source src="dehazed_nosmooth.mp4" type="video/mp4">
+      </video>
+    </div>
+  </div>
+
+  <script>
+    const videos = [document.getElementById('v1'), document.getElementById('v2'), document.getElementById('v3')];
+    const playBtn = document.getElementById('playBtn');
+    const restartBtn = document.getElementById('restartBtn');
+
+    playBtn.addEventListener('click', () => {
+      const anyPaused = videos.some(v => v.paused);
+      if (anyPaused) {
+        videos.forEach(v => v.play());
+        playBtn.textContent = 'Pause All';
+      } else {
+        videos.forEach(v => v.pause());
+        playBtn.textContent = 'Play All';
+      }
+    });
+
+    restartBtn.addEventListener('click', () => {
+      videos.forEach(v => {
+        v.currentTime = 0;
+        v.play();
+      });
+      playBtn.textContent = 'Pause All';
+    });
+  </script>
+</body>
+</html>

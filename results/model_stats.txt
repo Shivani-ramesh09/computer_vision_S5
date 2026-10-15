@@ -1,0 +1,10 @@
+==================================================
+DehazeFormer-T  —  Model Statistics
+==================================================
+Total parameters    : 687,404  (0.6874 M)
+Trainable params    : 687,404
+<1M assertion       : PASS
+Checkpoint size     : 3.05 MB
+MACs @ 256x256      : 6.251G
+FPS @ 480p (1 img)  : 4.6  (device=mps)
+==================================================

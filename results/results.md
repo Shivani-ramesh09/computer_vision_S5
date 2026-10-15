@@ -1,0 +1,8 @@
+# Evaluation Results on REVIDE
+
+| Method | PSNR (dB) | SSIM | Flicker | GT Flicker |
+|:---|:---:|:---:|:---:|:---:|
+| Hazy Input | 15.32 | 0.7590 | 5.40 | 20.25 |
+| Dark Channel Prior (DCP) | 11.37 | 0.6510 | 12.64 | 20.25 |
+| pretrained | 16.30 | 0.8028 | 9.77 | 20.25 |
+| finetuned | 20.58 | 0.8645 | 15.03 | 20.25 |
